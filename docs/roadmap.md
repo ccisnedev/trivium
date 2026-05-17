@@ -22,14 +22,53 @@
 
 **Objective:** Prove the mod works. A world where people can connect and talk by text when they are near each other. No companion app, no backend, no accounts.
 
+Release 0.0.x is split into small validation slices so infrastructure and gameplay risk are not mixed in a single step.
+
+| Micro-release | Scope | Success criterion |
+|---------------|-------|-------------------|
+| 0.0.1 | Office test world bootstrap on GCP via Terraform. One Luanti server with VoxeLibre, reachable from a local Luanti client using a manually installed VoxeLibre instance. No Trivium gameplay yet. | A player connects from their PC to `office.cacsi.dev`, loads the VoxeLibre world, moves normally, and reconnects after a server restart without losing the world. |
+| 0.0.2 | Install the Trivium mod scaffold on the server and verify it loads safely with VoxeLibre. | The server starts with VoxeLibre + Trivium Mod enabled and players can still join without regressions. |
+| 0.0.3 | Proximity text chat in the mod. This is the first release where the mod's actual gameplay behavior is validated. | Two players connect, walk toward each other, and only see chat messages when within radius. |
+
+#### v0.0.1 Checklist
+
+- [x] Define Terraform bootstrap layout under `code/infra/`.
+- [x] Create the new GCP project `cacsi-virtual-office`.
+- [x] Decide the final GCP project ID (use `cacsi-virtual-office` if available; otherwise keep the display name and choose the nearest unique ID).
+- [x] Enable the APIs required for a Luanti office test world (`compute.googleapis.com`, `dns.googleapis.com`).
+- [x] Create a bootstrap Terraform stack for project-level resources that cannot depend on the future project state bucket.
+- [x] Create a GCS bucket for Terraform remote state.
+- [x] Create the main Terraform stack for the office world.
+- [x] Declare a static public IP for the server.
+- [x] Declare firewall rules for UDP `30000` and restricted SSH access.
+- [x] Declare one Debian 12 Compute Engine VM for Luanti + VoxeLibre.
+- [x] Parameterize the machine type so `e2-small` can later be changed to `e2-medium` with a Terraform update.
+- [x] Provide a reproducible startup script that installs and starts Luanti server + VoxeLibre.
+- [x] Declare DNS for `office.cacsi.dev` if the zone is managed in GCP; otherwise document the manual DNS step.
+- [x] Apply Terraform successfully in GCP.
+- [x] Connect from the local PC to `office.cacsi.dev` using a local Luanti client with VoxeLibre installed.
+- [ ] Restart the server and verify the world remains reachable.
+
+#### v0.0.1 TDD Loop
+
+For infrastructure, TDD means defining the contract first and implementing the smallest Terraform that satisfies it.
+
+1. Write failing Terraform tests for the expected resources and outputs.
+2. Implement the minimal bootstrap stack and office stack until the tests pass.
+3. Refactor variables, startup script, and outputs without weakening the tests.
+4. Run `terraform test`, `terraform validate`, and then `terraform apply`.
+5. Finish with the real acceptance test: connect from the local PC to `office.cacsi.dev` and enter the world.
+
 | Deliverable | Detail |
 |-------------|--------|
-| Dev server | GCE instance with VoxeLibre + Trivium Mod. Manually provisioned via setup script. |
+| Dev server | GCE instance with VoxeLibre + Trivium Mod. Provisioned on GCP via Terraform and configured via startup/setup script. |
 | Trivium Mod (Lua) | Proximity text chat (configurable radius). Validates the proximity mechanic before voice arrives in 0.1.x. |
 | Access | Anyone with the server IP + Luanti + VoxeLibre installed can connect. No auth. |
 | Documentation | README with instructions for connecting to the server. |
 
 **Does not include:** voice, companion app, screen sharing, accounts, backend, payments.
+
+**Clarification:** 0.0.1 does not include voice, and voice is not implemented inside the Luanti mod. Spatial voice begins in 0.1.x through a separate companion app and LiveKit.
 
 **Success criterion:** Two people connect to the server, walk toward each other, and can only see text messages when they are within radius.
 
@@ -204,34 +243,34 @@
 
 ```
           ┌─── Phase 1: The World ─────────────────────────┐
-          │                                                 │
-0.0.x     │  Mod + dev server (text proximity only)         │
-          │       │                                         │
-0.1.x     │  Spatial voice + LiveKit                        │
-          │       │                                         │
-0.2.x     │  Screen sharing + companion app                 │
-          │                                                 │
-          └─────────────────────────────────────────────────┘
+          │                                                │
+0.0.x     │  Mod + dev server (text proximity only)        │
+          │       │                                        │
+0.1.x     │  Spatial voice + LiveKit                       │
+          │       │                                        │
+0.2.x     │  Screen sharing + companion app                │
+          │                                                │
+          └────────────────────────────────────────────────┘
           │
           ┌─── Phase 2: Platform + Monetization ───────────┐
-          │                                                 │
-0.3.x     │  User management + web and mobile app           │
-          │       │                                         │
-0.4.x     │  Stripe + subscriptions                         │
-          │       │                                         │
-0.5.x     │  Organizations + seats                          │
-          │       │                                         │
-0.6.x     │  Dedicated server per org                       │
-          │                                                 │
-          └─────────────────────────────────────────────────┘
+          │                                                │
+0.3.x     │  User management + web and mobile app          │
+          │       │                                        │
+0.4.x     │  Stripe + subscriptions                        │
+          │       │                                        │
+0.5.x     │  Organizations + seats                         │
+          │       │                                        │
+0.6.x     │  Dedicated server per org                      │
+          │                                                │
+          └────────────────────────────────────────────────┘
           │
           ┌─── Phase 3: Knowel Adventure ──────────────────┐
-          │                                                 │
-0.7.x     │  Tree of Noesis + progress                      │
-          │       │                                         │
-0.8.x     │  Quizzes + verification                         │
-          │                                                 │
-          └─────────────────────────────────────────────────┘
+          │                                                │
+0.7.x     │  Tree of Noesis + progress                     │
+          │       │                                        │
+0.8.x     │  Quizzes + verification                        │
+          │                                                │
+          └────────────────────────────────────────────────┘
           │
 1.x.x     First stable release
 ```

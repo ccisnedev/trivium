@@ -2,7 +2,7 @@
 
 > Status: draft
 > Version: 0.1.0
-> Releases: 0.0.x (text chat), 0.1.x (position API), 0.2.x (screen indicator), 0.7.x (tree + knowels)
+> Releases: 0.0.2–0.0.3 (mod bootstrap + text chat), 0.1.x (position API), 0.2.x (screen indicator), 0.7.x (tree + knowels)
 
 ---
 
@@ -10,7 +10,11 @@
 
 The Trivium Mod is a Lua mod for Luanti running on top of VoxeLibre. It provides proximity text chat (as a fallback to the companion app's spatial voice), exposes player state to the backend relay, renders in-game indicators, and in later releases implements the Tree of Noesis and knowel system within the 3D world.
 
+Release 0.0.1 does not require gameplay logic in the mod yet. Its only goal is to prove that a Terraform-managed GCP server running Luanti + VoxeLibre is reachable from a local client. The first functional mod milestone starts after that bootstrap.
+
 The mod runs on both the client and server side of Luanti.
+
+The mod does not implement real-time voice transport. Spatial voice starts in 0.1.x through the companion app and LiveKit.
 
 **Repo path:** `code/mod/`
 

@@ -16,12 +16,35 @@ All Trivium infrastructure runs on Google Cloud Platform (GCP). This spec covers
 
 | Release | Infrastructure Added |
 |---------|---------------------|
-| 0.0.x | 1 GCE instance: Luanti dev server (manual) |
+| 0.0.1 | 1 GCE instance: Luanti office test server provisioned with Terraform |
+| 0.0.2–0.0.5 | Same Luanti server lifecycle, extended as the Trivium mod evolves |
 | 0.1.x | 1 GCE instance: LiveKit server (manual) |
 | 0.3.x | Cloud Run: auth-svc, tenant-svc. Cloud SQL: PostgreSQL. |
 | 0.4.x | Stripe webhooks endpoint on Cloud Run. |
 | 0.6.x | server-svc on Cloud Run. GCE API for auto-provisioning. |
 | 0.7.x | Cloud Run: progress-svc, knowel-svc. |
+
+### Release 0.0.1 Bootstrap Scope
+
+The first deliverable is intentionally infrastructure-only so connectivity can be validated before any Trivium gameplay behavior is introduced.
+
+Included in 0.0.1:
+
+- Terraform-managed GCP resources for one office test server
+- Static public IP and DNS mapping for the test hostname
+- One Debian 12 Compute Engine VM running Luanti server + VoxeLibre
+- Firewall rules for Luanti and restricted SSH access
+- Startup or setup script that installs and starts the server reproducibly
+
+Explicitly excluded from 0.0.1:
+
+- Proximity voice chat
+- LiveKit
+- Companion app
+- Backend services, databases, auth, payments
+- Trivium gameplay logic beyond proving base world connectivity
+
+Changing the machine size later (for example `e2-small` to `e2-medium`) is handled by changing the Terraform variable for `machine_type` and re-applying. This normally requires a VM restart, but the boot disk and static IP remain attached if declared as persistent resources.
 
 ---
 
@@ -35,8 +58,10 @@ All Trivium infrastructure runs on Google Cloud Platform (GCP). This spec covers
 | OS | Debian 12 | Debian 12 |
 | Disk | 20GB SSD | 20GB SSD |
 | Ports | UDP 30000 | UDP 30000 |
-| Setup | Manual via `setup-server.sh` | Automated via server-svc |
+| Setup | Terraform apply + startup/setup script | Automated via server-svc |
 | Cost | ~$25/month | ~$50/month per org server |
+
+For the office test world in 0.0.1, `e2-small` is an acceptable starting point if only a few internal users connect. Increase to `e2-medium` once CPU or memory headroom becomes tight.
 
 ### LiveKit Server
 
@@ -77,8 +102,11 @@ gameid = VoxeLibre
 port = 30000
 max_users = 30
 creative_mode = false
-enable_damage = false
+enable_damage = true
 default_privs = interact, shout
+enable_bed_respawn = true
+mcl_return_spawn = true
+mob_difficulty = 3.0
 server_name = Trivium Dev
 EOF
 
