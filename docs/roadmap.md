@@ -47,7 +47,7 @@ Release 0.0.x is split into small validation slices so infrastructure and gamepl
 - [x] Declare DNS for `office.cacsi.dev` if the zone is managed in GCP; otherwise document the manual DNS step.
 - [x] Apply Terraform successfully in GCP.
 - [x] Connect from the local PC to `office.cacsi.dev` using a local Luanti client with VoxeLibre installed.
-- [ ] Restart the server and verify the world remains reachable.
+- [x] Restart the server and verify the world remains reachable.
 
 #### v0.0.1 TDD Loop
 

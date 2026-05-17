@@ -117,6 +117,8 @@ Mensaje de log confirmado durante el arranque:
 - Esta maquina ya tiene Luanti instalado por `winget`.
 - Version detectada localmente: `5.15.2`.
 - Se valido conexion real desde el PC local a `office.cacsi.dev:30000` con carga correcta del mundo.
+- Se valido reconexion despues de reiniciar el servicio `trivium-office` sin perder el mundo.
+- Observacion no bloqueante: durante lluvia, el audio ambiente puede no reanudarse tras una reconexion aunque la lluvia siga visible. Todo apunta a una desincronizacion interna de `mcl_weather` en VoxeLibre y no bloquea el cierre de `0.0.1`.
 
 ---
 
@@ -337,10 +339,6 @@ Nota: `admin_cidrs` refleja la IP publica usada durante esta iteracion y puede c
 
 ## Punto exacto en el que estamos
 
-`v0.0.1` ya valido infraestructura remota y conexion real desde cliente local.
+`v0.0.1` queda cerrada: infraestructura remota, conexion real desde cliente local y reconexion despues de reinicio ya quedaron validadas.
 
-Pendientes para cerrar formalmente la release:
-
-- reiniciar la VM y comprobar reconexion sin perder el mundo
-
-Despues de eso, el siguiente trabajo ya es `0.0.2`: instalar el esqueleto del mod de Trivium sin romper VoxeLibre.
+El siguiente trabajo ya es `0.0.2`: instalar el esqueleto del mod de Trivium sin romper VoxeLibre.

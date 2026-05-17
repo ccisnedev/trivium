@@ -8,6 +8,9 @@ local managed_privs = {
   fast = true,
 }
 
+local gamemode_apply_delay = 0.25
+local gamemode_apply_attempts = 8
+
 local function normalize_gamemode(value)
   if value == "creative" then
     return "creative"
@@ -93,6 +96,27 @@ local function profile_privs(user)
   return privs
 end
 
+local function apply_gamemode(name, gamemode, attempt)
+  local current_attempt = attempt or 1
+
+  core.after(gamemode_apply_delay, function()
+    local player = core.get_player_by_name(name)
+    if player == nil then
+      return
+    end
+
+    local ok, err = pcall(mcl_gamemode.set_gamemode, player, gamemode)
+    if ok or current_attempt >= gamemode_apply_attempts then
+      if not ok then
+        core.log("warning", "[trivium_access] failed to apply gamemode for " .. name .. ": " .. tostring(err))
+      end
+      return
+    end
+
+    apply_gamemode(name, gamemode, current_attempt + 1)
+  end)
+end
+
 local function apply_user_profile(name, player)
   local user = load_user(name)
   if user == nil then
@@ -113,7 +137,7 @@ local function apply_user_profile(name, player)
   core.set_player_privs(name, privs)
 
   if player ~= nil then
-    mcl_gamemode.set_gamemode(player, user.gamemode)
+    apply_gamemode(name, user.gamemode)
   end
 end
 
