@@ -56,6 +56,8 @@ trivium/
 ├── code/             # Source code (mod + companion app)
 ├── docs/
 │   ├── architecture.md  # System architecture
+│   ├── logbook.md       # Operational logbook
+│   ├── luanti-release-process.md # Luanti bundle release and deploy runbook
 │   ├── spec/            # Technical specifications
 │   │   ├── mod.md               # Trivium Mod (Lua)
 │   │   ├── companion-app.md     # Companion App (Flutter)
@@ -95,6 +97,11 @@ trivium/
 
 - [World Spec](docs/spec/world.md) — world design, capabilities, two-component architecture
 - [Cosmology](docs/spec/viridian.md) — Ensō, Viridian, Tree of Noesis, petals and knowels
+
+### Operations
+
+- [Operational Logbook](docs/logbook.md) — infrastructure history, incidents, validations, and field notes
+- [Luanti Release Process](docs/luanti-release-process.md) — how to build, publish, and roll out Luanti bundles for the office server
 
 ## Status
 

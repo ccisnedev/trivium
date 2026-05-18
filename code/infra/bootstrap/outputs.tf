@@ -17,3 +17,8 @@ output "state_bucket_name" {
   description = "GCS bucket name to use as Terraform remote state backend."
   value       = google_storage_bucket.terraform_state.name
 }
+
+output "artifacts_bucket_name" {
+  description = "Private GCS bucket name used to store versioned Luanti release artifacts."
+  value       = google_storage_bucket.artifacts.name
+}

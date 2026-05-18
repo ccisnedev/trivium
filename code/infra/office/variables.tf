@@ -27,6 +27,12 @@ variable "instance_name" {
   default     = "office-server"
 }
 
+variable "instance_ssh_user" {
+  description = "SSH username used to deploy mutable worldmods to the office VM."
+  type        = string
+  default     = "ccisnedev"
+}
+
 variable "hostname" {
   description = "Public hostname used by local clients to connect."
   type        = string
@@ -61,6 +67,19 @@ variable "disk_size_gb" {
   description = "Boot disk size in GB."
   type        = number
   default     = 20
+}
+
+variable "world_disk_size_gb" {
+  description = "Persistent disk size in GB for Luanti world data."
+  type        = number
+  default     = 20
+}
+
+variable "luanti_bundle_url" {
+  description = "Optional URL for a prebuilt Luanti server bundle. When null, the VM bootstrap compiles Luanti from source."
+  type        = string
+  default     = null
+  nullable    = true
 }
 
 variable "dns_managed_zone" {

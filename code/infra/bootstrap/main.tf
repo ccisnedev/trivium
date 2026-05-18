@@ -1,5 +1,6 @@
 locals {
-  effective_state_bucket_name = coalesce(var.state_bucket_name, "${var.project_id}-tfstate")
+  effective_state_bucket_name     = coalesce(var.state_bucket_name, "${var.project_id}-tfstate")
+  effective_artifacts_bucket_name = coalesce(var.artifacts_bucket_name, "${var.project_id}-artifacts")
   required_services = toset([
     "compute.googleapis.com",
     "dns.googleapis.com",
@@ -35,6 +36,17 @@ resource "google_storage_bucket" "terraform_state" {
   versioning {
     enabled = true
   }
+
+  depends_on = [google_project_service.required["storage.googleapis.com"]]
+}
+
+resource "google_storage_bucket" "artifacts" {
+  name                        = local.effective_artifacts_bucket_name
+  project                     = google_project.this.project_id
+  location                    = var.region
+  force_destroy               = false
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
 
   depends_on = [google_project_service.required["storage.googleapis.com"]]
 }

@@ -27,3 +27,8 @@ output "dns_mode" {
   description = "Whether the DNS record is managed by Cloud DNS or must be updated manually."
   value       = var.dns_managed_zone == null ? "manual" : "managed"
 }
+
+output "vm_service_account_email" {
+  description = "Dedicated service account email used by the office VM."
+  value       = google_service_account.office_vm.email
+}

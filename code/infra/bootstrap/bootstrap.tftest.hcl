@@ -39,4 +39,9 @@ run "bootstrap_contract" {
     condition     = output.state_bucket_name == "cacsi-virtual-office-tfstate"
     error_message = "Bootstrap must derive a predictable Terraform state bucket name by default."
   }
+
+  assert {
+    condition     = output.artifacts_bucket_name == "cacsi-virtual-office-artifacts"
+    error_message = "Bootstrap must derive a predictable private artifacts bucket name by default."
+  }
 }

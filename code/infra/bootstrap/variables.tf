@@ -26,3 +26,10 @@ variable "state_bucket_name" {
   default     = null
   nullable    = true
 }
+
+variable "artifacts_bucket_name" {
+  description = "Optional override for the private GCS bucket used to store Luanti release artifacts."
+  type        = string
+  default     = null
+  nullable    = true
+}
