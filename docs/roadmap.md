@@ -72,6 +72,31 @@ For infrastructure, TDD means defining the contract first and implementing the s
 
 **Success criterion:** Two people connect to the server, walk toward each other, and can only see text messages when they are within radius.
 
+#### v0.0.3 Checklist
+
+- [x] Re-read the mod contract before coding: 0.0.3 is text fallback only, not voice, not backend relay, not companion app work.
+- [x] Confirm the chat behavior against the spec: standard chat input is intercepted before default broadcast.
+- [x] Confirm the three scope levels and triggers from the mod spec: whisper via `/w` or `/whisper`, talk by default, shout via `/s` or `/shout`.
+- [x] Account for Luanti API behavior before implementation: default talk is intercepted as chat, while whisper and shout triggers starting with `/` must be implemented through chatcommand handling.
+- [x] Keep the three radii configurable through `trivium.chat_radius_whisper`, `trivium.chat_radius_talk`, and `trivium.chat_radius_shout`.
+- [x] Implement the smallest possible server-side path that computes distance from sender to connected players and only delivers within radius.
+- [x] Preserve a clear sender-facing outcome so the speaking player still sees their own delivered message.
+- [x] Reject or ignore empty chat payloads after removing the proximity trigger.
+- [x] Keep the implementation isolated to the Trivium mod instead of changing world access, VoxeLibre, or infrastructure.
+- [x] Validate syntax locally before any live deploy.
+- [x] Run a real two-player acceptance test on the office server: one player inside radius receives the message, one player outside radius does not.
+- [x] Record the release as complete only after the office-server acceptance test passes.
+
+#### v0.0.3 TDD Loop
+
+For the first gameplay release, TDD means writing the behavior contract first and only then implementing the minimum Lua needed to satisfy it.
+
+1. Write the failing behavior checklist first: default talk, whisper, shout, out-of-range suppression, sender visibility, and empty-message handling.
+2. Implement only the minimal server-side interception that suppresses Luanti's global chat broadcast for the default talk path.
+3. Add whisper and shout through the smallest command-handling path that matches Luanti's slash-command parsing.
+4. Refactor parsing, formatting, and radius helpers only after the behavior matrix is stable.
+5. Run syntax validation and finish with the real acceptance test on `office.cacsi.dev` using two players at different distances.
+
 ---
 
 ### Release 0.1.x — Spatial Voice + LiveKit

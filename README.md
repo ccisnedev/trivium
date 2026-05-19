@@ -102,6 +102,7 @@ trivium/
 
 - [Operational Logbook](docs/logbook.md) — infrastructure history, incidents, validations, and field notes
 - [Luanti Release Process](docs/luanti-release-process.md) — how to build, publish, and roll out Luanti bundles for the office server
+- [Proximity Chat Test Manual](docs/proximity-chat-test-manual.md) — step-by-step acceptance test for release 0.0.3
 
 ## Status
 
