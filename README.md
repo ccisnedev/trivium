@@ -1,109 +1,53 @@
 # Trivium
 
-> Where three roads cross: learning, work and virtual world.
+> Where three roads cross: learning, work, and virtual world.
 
-Trivium is an open digital world built on [Luanti](https://www.luanti.org/) + [VoxeLibre](https://codeberg.org/VoxeLibre/VoxeLibre) that works as:
+Trivium is a persistent online world built on Luanti + VoxeLibre.
 
-1. **Learning platform** — acquire knowels (verified capabilities), cultivate your Tree of Noesis and follow knowledge routes like in an RPG.
-2. **3D virtual office** — work remotely with proximity chat and screen sharing within a persistent spatial environment.
-3. **Explorable world** — an open voxel sandbox to explore, build and live.
+The project combines three product directions in a single system:
 
-## Architecture
+1. A 3D virtual office for remote collaboration.
+2. A learning platform centered on knowels and the Tree of Noesis.
+3. An explorable voxel world where those systems live together.
 
-Trivium is composed of three proprietary pieces and an infrastructure layer:
+## Current State
 
-| Component | Technology | Responsibility |
-|-----------|-----------|----------------|
-| **Luanti Mod** | Lua on VoxeLibre | 3D world, proximity text chat, in-game Tree of Noesis, knowel system |
-| **Companion App** | Flutter | Spatial voice chat, screen sharing, overlay, profile, subscription, org panel |
-| **Backend** | Dart + PostgreSQL | Auth, tenants, progress, knowels, server provisioning |
-| **Infrastructure** | GCP (GCE, Cloud Run, Cloud SQL) | Dedicated Luanti servers per organization, API on Cloud Run |
+- `0.0.1` completed: remote office test world on GCP.
+- `0.0.2` completed: Trivium mod scaffold deployed safely on the server.
+- `0.0.3` completed: proximity text chat implemented and acceptance-tested.
+- Next stage: `0.1.x` spatial voice with LiveKit.
 
-```
-┌─────────────────────────────┐     ┌──────────────────────────────┐
-│      Luanti + VoxeLibre     │     │      Companion App (Flutter) │
-│         + Trivium Mod       │     │                              │
-│                             │     │  • Voice chat (proximity)    │
-│  • Open 3D world            │◄───►│  • Screen sharing            │
-│  • Proximity text chat      │     │  • Status overlay            │
-│  • In-game Tree of Noesis   │     │  • Profile and subscription  │
-│  • Knowel system            │     │  • Organization panel        │
-└──────────────┬──────────────┘     └──────────────┬───────────────┘
-               │                                   │
-               └──────────┬───────────────────────┘
-                          │ HTTP/WS
-                ┌─────────▼──────────┐
-                │    Backend (Dart)   │
-                │  auth · tenant     │
-                │  progress · knowel │
-                │  server (prov.)    │
-                └─────────┬──────────┘
-                          │
-                ┌─────────▼──────────┐
-                │   PostgreSQL (RLS) │
-                └─────────┬──────────┘
-                          │
-                ┌─────────▼──────────┐
-                │   Luanti Servers   │
-                │   (public + orgs)  │
-                └────────────────────┘
-```
+## Main Components
 
-## Repo Structure
+| Component | Technology | Role |
+|-----------|------------|------|
+| Luanti Mod | Lua | In-world behavior: proximity text chat, later tree, knowels, and backend sync |
+| Companion App | Flutter | Spatial voice, screen sharing, launcher, overlay, account flows |
+| Backend | Dart + PostgreSQL | Auth, tenants, progress, knowels, and server lifecycle |
+| Infrastructure | GCP | Luanti servers, LiveKit, Cloud Run, Cloud SQL, networking |
 
-```
-trivium/
-├── code/             # Source code (mod + companion app)
-├── docs/
-│   ├── architecture.md  # System architecture
-│   ├── logbook.md       # Operational logbook
-│   ├── luanti-release-process.md # Luanti bundle release and deploy runbook
-│   ├── spec/            # Technical specifications
-│   │   ├── mod.md               # Trivium Mod (Lua)
-│   │   ├── companion-app.md     # Companion App (Flutter)
-│   │   ├── auth-svc.md          # Auth service
-│   │   ├── tenant-svc.md        # Tenant + organizations service
-│   │   ├── progress-svc.md      # Progress + tree service
-│   │   ├── knowel-svc.md        # Knowel catalog service
-│   │   ├── server-svc.md        # Server provisioning service
-│   │   ├── database.md          # Database schema + RLS
-│   │   ├── infrastructure.md    # GCE, LiveKit, Cloud Run, CI/CD
-│   │   ├── world.md             # World design and capabilities
-│   │   └── viridian.md          # Cosmology: Ensō, Viridian, Noesis
-│   └── roadmap.md       # Project roadmap
-└── README.md
-```
+## Repository Layout
 
-## Documentation
+| Path | Purpose |
+|------|---------|
+| `code/mod/` | Luanti mods (`trivium`, `trivium_access`) |
+| `code/app/` | Companion app source |
+| `code/api/` | Backend services |
+| `code/infra/` | Infrastructure and deployment assets |
+| `docs/` | Architecture, specs, roadmap, operations |
 
-### Architecture and Planning
+## Start Here
 
-- [System Architecture](docs/architecture.md) — components, backend, servers, pricing model
-- [Roadmap](docs/roadmap.md) — release-by-release implementation (0.0 → 1.0)
+- [docs/roadmap.md](docs/roadmap.md): release plan from `0.0.x` to `1.x`.
+- [docs/architecture.md](docs/architecture.md): high-level system architecture.
+- [docs/spec/index.md](docs/spec/index.md): component and infrastructure specs.
+- [docs/logbook.md](docs/logbook.md): implementation history and field notes.
 
-### Technical Specs
+## Operations
 
-- [Trivium Mod](docs/spec/mod.md) — proximity chat, position API, Tree of Noesis, knowel system (Lua)
-- [Companion App](docs/spec/companion-app.md) — voice engine, screen sharing, mod bridge, UI (Flutter)
-- [auth-svc](docs/spec/auth-svc.md) — registration, login, JWT, CLI admin tool
-- [tenant-svc](docs/spec/tenant-svc.md) — organizations, members, roles, Stripe billing
-- [progress-svc](docs/spec/progress-svc.md) — knowel progress, tree state, team dashboard
-- [knowel-svc](docs/spec/knowel-svc.md) — knowel catalog, graph, quizzes, recommendations
-- [server-svc](docs/spec/server-svc.md) — GCE provisioning, lifecycle, whitelist
-- [Database](docs/spec/database.md) — PostgreSQL schema, RLS policies, migrations
-- [Infrastructure](docs/spec/infrastructure.md) — GCE, LiveKit, Cloud Run, Cloud SQL, CI/CD
-
-### Design Specs
-
-- [World Spec](docs/spec/world.md) — world design, capabilities, two-component architecture
-- [Cosmology](docs/spec/viridian.md) — Ensō, Viridian, Tree of Noesis, petals and knowels
-
-### Operations
-
-- [Operational Logbook](docs/logbook.md) — infrastructure history, incidents, validations, and field notes
-- [Luanti Release Process](docs/luanti-release-process.md) — how to build, publish, and roll out Luanti bundles for the office server
-- [Proximity Chat Test Manual](docs/proximity-chat-test-manual.md) — step-by-step acceptance test for release 0.0.3
+- [docs/luanti-release-process.md](docs/luanti-release-process.md): Luanti bundle build and rollout process.
+- [docs/proximity-chat-test-manual.md](docs/proximity-chat-test-manual.md): acceptance test manual for release `0.0.3`.
 
 ## Status
 
-In specification phase.
+The office world is live, the Trivium mod is running on the remote server, and proximity text chat is validated in production-like usage. The next active track is the design and delivery of spatial voice for `0.1.x`.
